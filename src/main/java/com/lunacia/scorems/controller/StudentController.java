@@ -34,7 +34,7 @@ public class StudentController {
 	public HashMap<String, Object> getRank(
 			@RequestParam("st_id")String studentNum, @RequestParam("sub_id")int subId, @RequestParam("class_num")int classNum) {
 		List<Student> list = null;
-		if (studentMapper.getRank(studentNum) == null) {
+		if (studentMapper.getRank(studentNum, subId, classNum) == null) {
 			list = studentMapper.getAllScores(classNum, subId);
 			int rank = 1, increase = 1, prev = 0;
 			for (int i = 0; i < list.size(); i++) {
@@ -42,11 +42,12 @@ public class StudentController {
 				increase++;
 				prev = list.get(i).getScore();
 				list.get(i).setClassRank(rank);
+				studentMapper.setRank(rank, list.get(i).getStudentNum(), subId);
 			}
 		}
 		HashMap<String, Object> map = new HashMap<>();
 		HashMap<String, Object> rank = new HashMap<>();
-		rank.put("rank", studentMapper.getRank(studentNum));
+		rank.put("rank", studentMapper.getRank(studentNum, subId, classNum));
 		map.put("code", 200);
 		map.put("message", null);
 		map.put("data", rank);

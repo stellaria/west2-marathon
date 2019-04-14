@@ -25,21 +25,21 @@ public interface StudentMapper {
 	 * @param studentNum
 	 * @return
 	 */
-	@Select("SELECT rank FROM score_view WHERE st_id=#{studentNum}")
-	Integer getRank(@Param("studentNum")String studentNum);
+	@Select("SELECT `rank` FROM score WHERE st_id=#{studentNum} AND sub_id=#{subId} AND class_num=#{classNum}")
+	Integer getRank(@Param("studentNum")String studentNum, @Param("subId")int subId, @Param("classNum")int classNum);
 
 
 	@Select("SELECT st_id, sub_id, score, class_num FROM score WHERE class_num = #{classNum} AND sub_id = #{subId} ORDER BY score DESC")
 	@Results(id = "getAllScores", value = {
 			@Result(property = "studentNum", column = "st_id"),
-			@Result(property = "subNum", column = "sub_id"),
+			@Result(property = "subId", column = "sub_id"),
 			@Result(property = "classNum", column = "class_num"),
 			@Result(property = "score", column = "score")
 	})
 	List<Student> getAllScores(@Param("classNum")int classNum, @Param("subId")int subId);
 
-	@Update("UPDATE score SET rank=#{rank} WHERE st_id=#{st_id}")
-	void setRank(@Param("rank") int rank, @Param("st_id")String studentNum);
+	@Update("UPDATE score SET `rank`=#{rank} WHERE st_id=#{st_id} AND sub_id=#{subId}")
+	void setRank(@Param("rank") int rank, @Param("st_id")String studentNum, @Param("subId")int subId);
 
 
 	@Select("SELECT CAST(AVG(score) AS DECIMAL(9 , 1)) AS avg_score , sub_name FROM score_view WHERE class_num = #{classNum}  GROUP BY sub_name")
