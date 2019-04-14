@@ -31,6 +31,6 @@ public interface LeaderMapper {
 	@Select("SELECT MAX(score) AS max_score , sub_name FROM score_view WHERE class_num = #{classNum} GROUP BY sub_name")
 	List<Map<String , Object>> getMax(@Param("classNum") int classNum);
 
-	@Select("SELECT MIN(score) AS max_score , sub_name FROM score_view WHERE class_num = #{classNum} GROUP BY sub_name")
+	@Select("SELECT MIN(score) AS min_score , sub_name FROM score_view WHERE class_num = #{classNum} GROUP BY sub_name")
 	List<Map<String , Object>> getMin(@Param("classNum") int classNum);
 }

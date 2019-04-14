@@ -22,7 +22,7 @@ public class StudentController {
 		List<Map<String, Integer>> list = new LinkedList<>();
 		HashMap<String, Object> data = new HashMap<>();
 		data.put("学号", studentNum);
-		data.put("score", studentMapper.getScore("031799101", infoId);
+		data.put("score", studentMapper.getScore("031799101", infoId));
 		hashMap.put("code", 200);
 		hashMap.put("massage", "null");
 		hashMap.put("data", data);
