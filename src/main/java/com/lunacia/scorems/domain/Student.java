@@ -1,47 +1,56 @@
 package com.lunacia.scorems.domain;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Student {
-	private String st_num;
-	private String name;
-	private Map<String, Integer> score;
-	private int date_code;
+	private String studentNum;
+	private int subId;
+	private int score;
+	private int classNum;
+	private int classRank;
 
 	public Student() {
 	}
 
-	public String getSt_num() {
-
-		return st_num;
+	public String getStudentNum() {
+		return studentNum;
 	}
 
-	public void setSt_num(String st_num) {
-		this.st_num = st_num;
+	public void setStudentNum(String studentNum) {
+		this.studentNum = studentNum;
 	}
 
-	public String getName() {
-		return name;
+	public int getSubId() {
+		return subId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setSubId(int subId) {
+		this.subId = subId;
 	}
 
-	public Map<String, Integer> getScore() {
+	public int getScore() {
 		return score;
 	}
 
-	public void setScore(Map<String, Integer> score) {
+	public void setScore(int score) {
 		this.score = score;
 	}
 
-	public int getDate_code() {
-		return date_code;
+	public int getClassNum() {
+		return classNum;
 	}
 
-	public void setDate_code(int date_code) {
-		this.date_code = date_code;
+	public void setClassNum(int classNum) {
+		this.classNum = classNum;
+	}
+
+	public int getClassRank() {
+		return classRank;
+	}
+
+	public void setClassRank(int classRank) {
+		this.classRank = classRank;
 	}
 }

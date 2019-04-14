@@ -2,9 +2,8 @@ package com.lunacia.scorems.mapper;
 
 
 import com.lunacia.scorems.domain.Student;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +11,45 @@ import java.util.Map;
 @Mapper
 public interface StudentMapper {
 
-	@Select("SELECT sub_name, score FROM score_view WHERE st_id=#{studentNum}")
-	List<Map<String, Integer>> getScore(@Param("studentNum") String studentNum);
+	/**
+	 * 按学号和学年代码查找某人的成绩
+	 * @param studentNum 学号
+	 * @param infoID 学年代码
+	 * @return 所有成绩
+	 */
+	@Select("SELECT sub_name, score FROM score_view WHERE st_id=#{studentNum} AND info_id=#{year}")
+	List<Map<String, Integer>> getScore(@Param("studentNum") String studentNum, @Param("year") int infoID);
+
+	/**
+	 * 获取排名
+	 * @param studentNum
+	 * @return
+	 */
+	@Select("SELECT rank FROM score_view WHERE st_id=#{studentNum}")
+	Integer getRank(@Param("studentNum")String studentNum);
+
+
+	@Select("SELECT st_id, sub_id, score, class_num FROM score WHERE class_num = #{classNum} AND sub_id = #{subId} ORDER BY score DESC")
+	@Results(id = "getAllScores", value = {
+			@Result(property = "studentNum", column = "st_id"),
+			@Result(property = "subNum", column = "sub_id"),
+			@Result(property = "classNum", column = "class_num"),
+			@Result(property = "score", column = "score")
+	})
+	List<Student> getAllScores(@Param("classNum")int classNum, @Param("subId")int subId);
+
+	@Update("UPDATE score SET rank=#{rank} WHERE st_id=#{st_id}")
+	void setRank(@Param("rank") int rank, @Param("st_id")String studentNum);
+
+
+	@Select("SELECT CAST(AVG(score) AS DECIMAL(9 , 1)) AS avg_score , sub_name FROM score_view WHERE class_num = #{classNum}  GROUP BY sub_name")
+	List<Map<String , Double>> getSingleAvg(@Param("classNum") int classNum);
+	//学科名加平均成绩
+
+	@Select("SELECT AVG(score) AS avgScore FROM score WHERE st_id = #{stId}")
+	List<Map<String , Object>> getSelfAvg(@Param("stId") String stId);
+	//显示个人成绩平均分
+
+
 
 }
