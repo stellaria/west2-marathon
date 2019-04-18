@@ -16,11 +16,26 @@ public class LeaderController {
 	@Autowired
 	private LeaderMapper leaderMapper;
 
+	@GetMapping("/getLeader")
+	public LinkedHashMap<String , Object> getLeader(@RequestParam(value = "class_num") int classNum){
+		LinkedHashMap<String , Object> hashMap = new LinkedHashMap<>();
+		HashMap<String , Object> data = new HashMap<>();
+		data.put("class_num" , classNum);
+		data.put("avg_score" , leaderMapper.getAllAvg(classNum));
+		data.put("pass_rate" , leaderMapper.getPassRate(classNum));
+		data.put("grate_rate" , leaderMapper.getGrateRate(classNum));
+		data.put("max" , leaderMapper.getMax(classNum));
+		data.put("min" , leaderMapper.getMin(classNum));
+		hashMap.put("data" , data);
+		return hashMap;
+	}
+
+	/*
 	@GetMapping("/getAvg/getAll")
 	public LinkedHashMap<String, Object> getSingleAvg(@RequestParam(value = "class_num") int classNum){
 		LinkedHashMap<String , Object> hashMap = new LinkedHashMap<>();
 		HashMap<String, Object> data = new HashMap<>();
-		data.put("sub_id" , classNum);
+		data.put("class_num" , classNum);
 		data.put("avg_score" , leaderMapper.getAllAvg(classNum));
 		hashMap.put("data" , data);
 		return hashMap;
@@ -71,4 +86,5 @@ public class LeaderController {
 
 		return hashMap;
 	}
+	*/
 }
