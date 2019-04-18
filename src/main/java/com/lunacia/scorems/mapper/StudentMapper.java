@@ -41,6 +41,28 @@ public interface StudentMapper {
 	@Update("UPDATE score SET `rank`=#{rank} WHERE st_id=#{st_id} AND sub_id=#{subId}")
 	void setRank(@Param("rank") int rank, @Param("st_id")String studentNum, @Param("subId")int subId);
 
+	/**
+	 * 获取总分排名
+	 * @param infoId
+	 * @param studentNum
+	 * @return
+	 */
+	@Select("SELECT sum_rank FROM score_sum WHERE info_id = #{infoId} AND st_id = #{studentNum}")
+	Integer getSumRank(@Param("infoId")int infoId , @Param("studentNum")String studentNum);
+
+	@Select("SELECT st_id , info_id , total FROM score_sum WHERE info_id = #{infoId} ORDER BY total DESC")
+	@Results(id = "getStudentSum" , value = {
+			@Result(property = "studentNum" , column = "st_id") ,
+			@Result(property = "infoId" , column = "info_id"),
+			@Result(property = "score" , column = "total")
+	})
+	List<Student> getStudentSum(@Param("infoId") int infoId);
+
+	@Update("UPDATE score_sum SET sum_rank = #{sum_rank} WHERE st_id = #{st_id} AND info_id = #{info_id}" )
+	void setSumRank(@Param("sum_rank") int sumRank, @Param("st_id")String studentNum, @Param("info_id")int infoId);
+
+	//==================================================
+
 
 	@Select("SELECT CAST(AVG(score) AS DECIMAL(9 , 1)) AS avg_score , sub_name FROM score_view WHERE class_num = #{classNum}  GROUP BY sub_name")
 	List<Map<String , Double>> getSingleAvg(@Param("classNum") int classNum);

@@ -3,6 +3,7 @@ package com.lunacia.scorems.controller;
 
 import com.lunacia.scorems.domain.Student;
 import com.lunacia.scorems.mapper.StudentMapper;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import java.util.*;
 public class StudentController {
 
 	@Autowired
+	@SuppressWarnings("SpringJavaAutowiringInspection")
 	private StudentMapper studentMapper;
 
 	/**
@@ -23,7 +25,7 @@ public class StudentController {
 	 * @param infoId
 	 * @return
 	 */
-	@GetMapping("/score/self")
+	@GetMapping("/wapi/score/self")
 	public HashMap<String, Object> getScore(@RequestParam("st_id")String studentNum, @RequestParam("info_id")int infoId) {
 		LinkedHashMap<String, Object> hashMap = new LinkedHashMap<>();
 		List<Map<String, Integer>> list = new LinkedList<>();
@@ -44,7 +46,7 @@ public class StudentController {
 	 * @param classNum
 	 * @return rank
 	 */
-	@GetMapping("/rank/self")
+	@GetMapping("/api/rank/self")
 	public HashMap<String, Object> getRank(
 			@RequestParam("st_id")String studentNum, @RequestParam("sub_id")int subId, @RequestParam("class_num")int classNum) {
 		List<Student> list = null;
@@ -68,13 +70,40 @@ public class StudentController {
 		return map;
 	}
 
+	@GetMapping("/api/rank/sum")
+	public HashMap<String , Object> getSumRank(
+			@RequestParam("st_id")String studentNum ,
+			@RequestParam("info_id")int infoId){
+		List<Student> list = null;
+		if(studentMapper.getSumRank(infoId , studentNum) == null){
+			int rank = 1 , increase = 1 , prev = 0;
+			list = studentMapper.getStudentSum(infoId);
+			for (int i = 0 ; i < list.size() ; i++){
+				rank = prev == list.get(i).getScore()? rank : increase;
+				increase++;
+				prev = list.get(i).getScore();
+				//闪电st.get(i).setClassRank(rank);
+//				System.out.println(list.get(i).getStudentNum() + list.get(i).getInfoId());
+				studentMapper.setSumRank(rank , list.get(i).getStudentNum() , list.get(i).getInfoId());
+			}
+		}
+		HashMap<String , Object> hashMap = new HashMap<>();
+		HashMap<String , Object> rank = new HashMap<>();
+		rank.put("sum_rank" , studentMapper.getSumRank(infoId ,studentNum));
+		hashMap.put("code", 200);
+		hashMap.put("message", "");
+		hashMap.put("data", rank);
+		return hashMap;
+	}
+
+
 	/**
 	 * 返回某个学生某次考试所有科目的平均分
 	 * @param stId
 	 * @param dateId
 	 * @return
 	 */
-	@GetMapping("/avg/self")
+	@GetMapping("/api/avg/self")
 	public LinkedHashMap<String , Object> getSelfAvg(@RequestParam(value = "st_id") String stId,
 	                                                 @RequestParam(value = "exam_info")int dateId){
 		HashMap<String , Object> data = new HashMap<>();

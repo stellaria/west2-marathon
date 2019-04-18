@@ -16,6 +16,7 @@ import java.util.Map;
 public class LoginController {
 
 	@Autowired
+	@SuppressWarnings("SpringJavaAutowiringInspection")
 	private LoginMapper loginMapper;
 
 	@PostMapping("/login")
