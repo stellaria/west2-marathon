@@ -8,6 +8,7 @@ public class Student {
 	private String studentNum;
 	private int subId;
 	private int score;
+	private String examDate;
 	private int classNum;
 	private int classRank;
 
@@ -52,5 +53,13 @@ public class Student {
 
 	public void setClassRank(int classRank) {
 		this.classRank = classRank;
+	}
+
+	public String getExamDate () {
+		return examDate;
+	}
+
+	public void setExamDate (String examDate) {
+		this.examDate = examDate;
 	}
 }
