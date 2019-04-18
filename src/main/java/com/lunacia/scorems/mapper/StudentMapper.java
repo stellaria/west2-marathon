@@ -46,8 +46,14 @@ public interface StudentMapper {
 	List<Map<String , Double>> getSingleAvg(@Param("classNum") int classNum);
 	//学科名加平均成绩
 
-	@Select("SELECT AVG(score) AS avgScore FROM score WHERE st_id = #{stId}")
-	List<Map<String , Object>> getSelfAvg(@Param("stId") String stId);
+	@Select("SELECT AVG(score) AS avg_score, exam_info.exam_date AS date" +
+			" FROM score, exam_info WHERE score.st_id = #{stId} AND score.info_id=#{date_id} AND exam_info.info_id=#{date_id}")
+	@Results(id = "getSelfAvg", value = {
+			@Result(property = "studentNum", column = "st_id"),
+			@Result(property = "score", column = "avg_score"),
+			@Result(property = "examDate", column = "date")
+	})
+	Student getSelfAvg(@Param("stId") String stId, @Param("date_id") int dateId);
 	//显示个人成绩平均分
 
 

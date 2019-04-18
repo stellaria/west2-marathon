@@ -5,6 +5,7 @@ import com.lunacia.scorems.domain.Student;
 import com.lunacia.scorems.mapper.StudentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,21 +17,34 @@ public class StudentController {
 	@Autowired
 	private StudentMapper studentMapper;
 
-	@GetMapping("/getScore")
+	/**
+	 * 获得某个学生某次考试的所有成绩
+	 * @param studentNum
+	 * @param infoId
+	 * @return
+	 */
+	@GetMapping("/score/self")
 	public HashMap<String, Object> getScore(@RequestParam("st_id")String studentNum, @RequestParam("info_id")int infoId) {
 		LinkedHashMap<String, Object> hashMap = new LinkedHashMap<>();
 		List<Map<String, Integer>> list = new LinkedList<>();
 		HashMap<String, Object> data = new HashMap<>();
-		data.put("学号", studentNum);
-		data.put("score", studentMapper.getScore("031799101", infoId));
+		data.put("st_id", studentNum);
+		data.put("score", studentMapper.getScore(studentNum, infoId));
 		hashMap.put("code", 200);
-		hashMap.put("massage", "null");
+		hashMap.put("massage", "");
 		hashMap.put("data", data);
 
 		return hashMap;
 	}
 
-	@GetMapping("/getRank")
+	/**
+	 * 返回学生某项考试的班级排名
+	 * @param studentNum
+	 * @param subId
+	 * @param classNum
+	 * @return rank
+	 */
+	@GetMapping("/rank/self")
 	public HashMap<String, Object> getRank(
 			@RequestParam("st_id")String studentNum, @RequestParam("sub_id")int subId, @RequestParam("class_num")int classNum) {
 		List<Student> list = null;
@@ -49,20 +63,34 @@ public class StudentController {
 		HashMap<String, Object> rank = new HashMap<>();
 		rank.put("rank", studentMapper.getRank(studentNum, subId, classNum));
 		map.put("code", 200);
-		map.put("message", null);
+		map.put("message", "");
 		map.put("data", rank);
 		return map;
 	}
 
-	//普通学生查看自己的平均分
-	@GetMapping("/getSelfAvg")
-	public LinkedHashMap<String , Object> getSelfAvg(@RequestParam(value = "st_id") String stId){
+	/**
+	 * 返回某个学生某次考试所有科目的平均分
+	 * @param stId
+	 * @param dateId
+	 * @return
+	 */
+	@GetMapping("/avg/self")
+	public LinkedHashMap<String , Object> getSelfAvg(@RequestParam(value = "st_id") String stId,
+	                                                 @RequestParam(value = "exam_info")int dateId){
 		HashMap<String , Object> data = new HashMap<>();
-		data.put("st_id" , stId);
-		data.put("self_avg" , studentMapper.getSelfAvg(stId));
 		LinkedHashMap <String , Object> hashMap = new LinkedHashMap<>();
-		hashMap.put("data" , data);
-
+		Student student = studentMapper.getSelfAvg(stId, dateId);
+		if (student != null) {
+			data.put("st_id" , stId);
+			data.put("self_avg" , student.getScore());
+			data.put("exam_date", student.getExamDate());
+			hashMap.put("code", 200);
+			hashMap.put("message", "");
+			hashMap.put("data" , data);
+		} else {
+			hashMap.put("code", 400);
+			hashMap.put("message", "查无此人");
+		}
 		return hashMap;
 	}
 
