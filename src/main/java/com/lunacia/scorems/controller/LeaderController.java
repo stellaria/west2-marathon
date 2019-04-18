@@ -20,6 +20,8 @@ public class LeaderController {
 	public LinkedHashMap<String , Object> getLeader(@RequestParam(value = "class_num") int classNum){
 		LinkedHashMap<String , Object> hashMap = new LinkedHashMap<>();
 		HashMap<String , Object> data = new HashMap<>();
+		hashMap.put("code", 200);
+		hashMap.put("message", "");
 		data.put("class_num" , classNum);
 		data.put("avg_score" , leaderMapper.getAllAvg(classNum));
 		data.put("pass_rate" , leaderMapper.getPassRate(classNum));
