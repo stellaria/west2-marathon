@@ -1,6 +1,7 @@
 package com.lunacia.scorems.controller;
 
 
+import com.lunacia.scorems.domain.Student;
 import com.lunacia.scorems.mapper.LeaderMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -87,6 +88,30 @@ public class LeaderController {
 		hashMap.put("message", "");
 		hashMap.put("data" , data);
 
+		return hashMap;
+	}
+
+	@GetMapping("/rank/all")
+	public HashMap<String , Object> getAllClassRank(@RequestParam(value = "class_num") int classMum ,
+													@RequestParam(value = "info_id") int infoId){
+		List<Student> list = null;
+		if (leaderMapper.checkNull() == null){
+			int rank = 1 , increase = 1 , prev = 0;
+			list = leaderMapper.getAllClassRank(infoId , classMum);
+			for(int i = 0 ; i < list.size() ; i++){
+				rank = prev == list.get(i).getScore()? rank : increase;
+				increase++;
+				prev = list.get(i).getScore();
+				//list.get(i).setClassRank(rank);
+				leaderMapper.setSumRank(rank , list.get(i).getStudentNum() , list.get(i).getInfoId());
+			}
+		}
+		HashMap<String , Object> hashMap = new HashMap<>();
+		HashMap<String , List<Student>> rank = new HashMap<>();
+		rank.put("sum_rank" , leaderMapper.getAllClassRank(infoId , classMum));
+		hashMap.put("code", 200);
+		hashMap.put("message", "");
+		hashMap.put("data", rank);
 		return hashMap;
 	}
 }

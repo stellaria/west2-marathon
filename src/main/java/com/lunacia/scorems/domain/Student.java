@@ -11,6 +11,15 @@ public class Student {
 	private String examDate;
 	private int classNum;
 	private int classRank;
+	private int infoId;
+
+	public int getInfoId() {
+		return infoId;
+	}
+
+	public void setInfoId(int infoId) {
+		this.infoId = infoId;
+	}
 
 	public Student() {
 	}
@@ -62,4 +71,5 @@ public class Student {
 	public void setExamDate (String examDate) {
 		this.examDate = examDate;
 	}
+
 }

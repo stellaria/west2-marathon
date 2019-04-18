@@ -3,6 +3,7 @@ package com.lunacia.scorems.controller;
 
 import com.lunacia.scorems.domain.Student;
 import com.lunacia.scorems.mapper.StudentMapper;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -67,6 +68,33 @@ public class StudentController {
 		map.put("data", rank);
 		return map;
 	}
+
+	@GetMapping("/rank/sum")
+	public HashMap<String , Object> getSumRank(
+			@RequestParam("st_id")String studentNum ,
+			@RequestParam("info_id")int infoId){
+		List<Student> list = null;
+		if(studentMapper.getSumRank(infoId , studentNum) == null){
+			int rank = 1 , increase = 1 , prev = 0;
+			list = studentMapper.getStudentSum(infoId);
+			for (int i = 0 ; i < list.size() ; i++){
+				rank = prev == list.get(i).getScore()? rank : increase;
+				increase++;
+				prev = list.get(i).getScore();
+				//list.get(i).setClassRank(rank);
+//				System.out.println(list.get(i).getStudentNum() + list.get(i).getInfoId());
+				studentMapper.setSumRank(rank , list.get(i).getStudentNum() , list.get(i).getInfoId());
+			}
+		}
+		HashMap<String , Object> hashMap = new HashMap<>();
+		HashMap<String , Object> rank = new HashMap<>();
+		rank.put("sum_rank" , studentMapper.getSumRank(infoId ,studentNum));
+		hashMap.put("code", 200);
+		hashMap.put("message", "");
+		hashMap.put("data", rank);
+		return hashMap;
+	}
+
 
 	/**
 	 * 返回某个学生某次考试所有科目的平均分
