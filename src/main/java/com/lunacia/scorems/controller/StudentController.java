@@ -109,7 +109,7 @@ public class StudentController {
 	 */
 	@GetMapping("/api/avg/self")
 	public LinkedHashMap<String , Object> getSelfAvg(@RequestParam(value = "st_id") String stId,
-	                                                 @RequestParam(value = "exam_info")int dateId){
+	                                                 @RequestParam(value = "info_id")int dateId){
 		HashMap<String , Object> data = new HashMap<>();
 		LinkedHashMap <String , Object> hashMap = new LinkedHashMap<>();
 		Student student = studentMapper.getSelfAvg(stId, dateId);
