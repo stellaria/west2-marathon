@@ -3,8 +3,9 @@ package com.lunacia.scorems.domain;
 public class User {
 	private String studentNum;
 	private String name;
-	private String classNum;
+	private int classNum;
 	private int leader;
+	private int flag;
 
 	public User() {
 	}
@@ -25,11 +26,11 @@ public class User {
 		this.name = name;
 	}
 
-	public String getClassNum() {
+	public int getClassNum() {
 		return classNum;
 	}
 
-	public void setClassNum(String classNum) {
+	public void setClassNum(int classNum) {
 		this.classNum = classNum;
 	}
 
@@ -39,5 +40,13 @@ public class User {
 
 	public void setLeader(int leader) {
 		this.leader = leader;
+	}
+
+	public int getFlag () {
+		return flag;
+	}
+
+	public void setFlag (int flag) {
+		this.flag = flag;
 	}
 }

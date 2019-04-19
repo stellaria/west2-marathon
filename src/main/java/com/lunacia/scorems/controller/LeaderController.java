@@ -3,21 +3,27 @@ package com.lunacia.scorems.controller;
 
 import com.lunacia.scorems.domain.Student;
 import com.lunacia.scorems.mapper.LeaderMapper;
+import com.lunacia.scorems.mapper.StudentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 public class LeaderController {
 
 	@Autowired
 	@SuppressWarnings("SpringJavaAutowiringInspection")
 	private LeaderMapper leaderMapper;
+	@Autowired
+	private StudentMapper studentMapper;
 
 	@GetMapping("/api/getLeader")
 	public LinkedHashMap<String , Object> getLeader(@RequestParam(value = "class_num") int classNum){
@@ -92,30 +98,70 @@ public class LeaderController {
 		return hashMap;
 	}
 	*/
+
+	/**
+	 * 获取某个学期所有人的总分排名
+	 * @param classMum
+	 * @param infoId
+	 * @return
+	 */
 	@GetMapping("/api/rank/all")
-	public HashMap<String , Object> getAllClassRank(@RequestParam(value = "class_num") int classMum ,
+	public HashMap<String , Object> getAllClassRank(@RequestParam(value = "class_num") int classMum,
 	                                                @RequestParam(value = "info_id") int infoId){
-		List<Student> list = null;
-		if (leaderMapper.checkNull() == null){
+		List<Student> list = leaderMapper.getAllClassRank(infoId, classMum);
+		if (list.get(0).getClassRank() == 0){
 			int rank = 1 , increase = 1 , prev = 0;
-			list = leaderMapper.getAllClassRank(infoId , classMum);
 			for(int i = 0 ; i < list.size() ; i++){
 				rank = prev == list.get(i).getScore()? rank : increase;
 				increase++;
 				prev = list.get(i).getScore();
-				//st.get(i).setClassRank(rank);
+				list.get(i).setClassRank(rank);
 				leaderMapper.setSumRank(rank , list.get(i).getStudentNum() , list.get(i).getInfoId());
 			}
 		}
 		HashMap<String , Object> hashMap = new HashMap<>();
 		HashMap<String , List<Student>> rank = new HashMap<>();
-		rank.put("sum_rank" , leaderMapper.getAllClassRank(infoId , classMum));
+		rank.put("sum_rank" , list);
 		hashMap.put("code", 200);
 		hashMap.put("message", "");
 		hashMap.put("data", rank);
 		return hashMap;
 	}
 
+	/**
+	 * 获取本班某科目所有人的排名
+	 * @param classNum
+	 * @param subId
+	 * @return
+	 */
+	@GetMapping("/api/rank/single")
+	public HashMap<String, Object> getAllSingleRank(@RequestParam(value = "class_num")int classNum,
+	                                                @RequestParam(value = "sub_id")int subId) {
+		HashMap<String, Object> map = new HashMap<>();
+		List<Student> list = leaderMapper.getAllSingleRank(classNum, subId);
+		if (list.get(0).getClassRank() == 0) {
+			int rank = 1, increase = 1, prev = 0;
+			for (int i = 0; i < list.size(); i++) {
+				rank = prev == list.get(i).getScore()? rank : increase;
+				increase++;
+				prev = list.get(i).getScore();
+				list.get(i).setClassRank(rank);
+				studentMapper.setRank(rank, list.get(i).getStudentNum(), subId);
+			}
+		}
+		map.put("code", 200);
+		map.put("message", "");
+		map.put("data", list);
+		map.put("class_num", classNum);
+		return map;
+	}
+
+	/**
+	 * 获取某科目的优、良、及格和不及格的人数
+	 * @param classNum
+	 * @param subId
+	 * @return
+	 */
 	@GetMapping("/api/score/classify")
 	public HashMap<String, Object> getClassify(@RequestParam(value = "class_num") int classNum,
 	                                           @RequestParam(value = "sub_id")int subId) {

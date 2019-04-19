@@ -47,8 +47,8 @@ public interface StudentMapper {
 	 * @param studentNum
 	 * @return
 	 */
-	@Select("SELECT sum_rank FROM score_sum WHERE info_id = #{infoId} AND st_id = #{studentNum}")
-	Integer getSumRank(@Param("infoId")int infoId , @Param("studentNum")String studentNum);
+	@Select("SELECT sum_rank FROM score_sum WHERE info_id = #{infoId} AND st_id = #{studentNum} AND class_num=#{class_num}")
+	Integer getSumRank(@Param("infoId")int infoId , @Param("studentNum")String studentNum, @Param("class_num")int classNum);
 
 	@Select("SELECT st_id , info_id , total FROM score_sum WHERE info_id = #{infoId} ORDER BY total DESC")
 	@Results(id = "getStudentSum" , value = {
@@ -58,7 +58,7 @@ public interface StudentMapper {
 	})
 	List<Student> getStudentSum(@Param("infoId") int infoId);
 
-	@Update("UPDATE score_sum SET sum_rank = #{sum_rank} WHERE st_id = #{st_id} AND info_id = #{info_id}" )
+	@Update("UPDATE score_sum SET sum_rank = #{sum_rank} WHERE st_id = #{st_id} AND info_id = #{info_id}")
 	void setSumRank(@Param("sum_rank") int sumRank, @Param("st_id")String studentNum, @Param("info_id")int infoId);
 
 	//==================================================
@@ -78,6 +78,7 @@ public interface StudentMapper {
 	Student getSelfAvg(@Param("stId") String stId, @Param("date_id") int dateId);
 	//显示个人成绩平均分
 
-
+	@Select("SELECT COUNT(*) FROM exam_info")
+	Integer getTermCount();
 
 }

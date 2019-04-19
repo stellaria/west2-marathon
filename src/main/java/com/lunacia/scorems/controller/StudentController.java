@@ -5,13 +5,11 @@ import com.lunacia.scorems.domain.Student;
 import com.lunacia.scorems.mapper.StudentMapper;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
+@CrossOrigin
 @RestController
 public class StudentController {
 
@@ -25,7 +23,7 @@ public class StudentController {
 	 * @param infoId
 	 * @return
 	 */
-	@GetMapping("/wapi/score/self")
+	@GetMapping("/api/score/self")
 	public HashMap<String, Object> getScore(@RequestParam("st_id")String studentNum, @RequestParam("info_id")int infoId) {
 		LinkedHashMap<String, Object> hashMap = new LinkedHashMap<>();
 		List<Map<String, Integer>> list = new LinkedList<>();
@@ -70,26 +68,32 @@ public class StudentController {
 		return map;
 	}
 
+	/**
+	 * 获取某人某学期总分排名
+	 * @param studentNum
+	 * @param infoId
+	 * @param classNum
+	 * @return
+	 */
 	@GetMapping("/api/rank/sum")
 	public HashMap<String , Object> getSumRank(
 			@RequestParam("st_id")String studentNum ,
-			@RequestParam("info_id")int infoId){
-		List<Student> list = null;
-		if(studentMapper.getSumRank(infoId , studentNum) == null){
+			@RequestParam("info_id")int infoId,
+			@RequestParam("class_num")int classNum){
+		List<Student> list = studentMapper.getStudentSum(infoId);
+		if(studentMapper.getSumRank(infoId,studentNum,classNum) == 0){
 			int rank = 1 , increase = 1 , prev = 0;
-			list = studentMapper.getStudentSum(infoId);
 			for (int i = 0 ; i < list.size() ; i++){
 				rank = prev == list.get(i).getScore()? rank : increase;
 				increase++;
 				prev = list.get(i).getScore();
-				//闪电st.get(i).setClassRank(rank);
-//				System.out.println(list.get(i).getStudentNum() + list.get(i).getInfoId());
+				list.get(i).setClassRank(rank);
 				studentMapper.setSumRank(rank , list.get(i).getStudentNum() , list.get(i).getInfoId());
 			}
 		}
 		HashMap<String , Object> hashMap = new HashMap<>();
 		HashMap<String , Object> rank = new HashMap<>();
-		rank.put("sum_rank" , studentMapper.getSumRank(infoId ,studentNum));
+		rank.put("sum_rank" , studentMapper.getSumRank(infoId,studentNum,classNum));
 		hashMap.put("code", 200);
 		hashMap.put("message", "");
 		hashMap.put("data", rank);

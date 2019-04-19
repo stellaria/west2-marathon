@@ -35,17 +35,14 @@ public interface LeaderMapper {
 	List<Map<String , Object>> getMin(@Param("classNum") int classNum);
 
 	//获取总分排名
-	@Select("SELECT st_id ,total , sum_rank , info_id FROM score_sum WHERE info_id = #{infoId} AND class_num = #{classNum} ORDER BY total DESC")
+	@Select("SELECT st_id ,total , sum_rank, info_id FROM score_sum WHERE info_id = #{info_id} AND class_num = #{classNum} ORDER BY total DESC")
 	@Results(id = "getAllClassRank" , value = {
-			@Result(property = "infoId" , column = "info_id"),
 			@Result(property = "studentNum" , column = "st_id"),
 			@Result(property = "classRank" ,column = "sum_rank"),
-			@Result(property = "score" , column = "total")
+			@Result(property = "score" , column = "total"),
+			@Result(property = "infoId", column = "info_id")
 	})
-	List<Student> getAllClassRank(@Param("infoId") int infoId , @Param("classNum") int classNum);
-
-	@Select("SELECT sum_rank FROM score_sum WHERE info_id = 3 AND st_id = 031799123")
-	Integer checkNull();
+	List<Student> getAllClassRank(@Param("info_id")int infoId, @Param("classNum") int classNum);
 
 	@Update("UPDATE score_sum SET sum_rank = #{sum_rank} WHERE st_id = #{st_id} AND info_id = #{info_id}")
 	void setSumRank(@Param("sum_rank") int sumRank, @Param("st_id")String studentNum, @Param("info_id")int infoId);
@@ -59,4 +56,12 @@ public interface LeaderMapper {
 	@Select("select score from score where class_num = #{class_num} and sub_id = #{sub_id}")
 	List<Integer> getKind(@Param("sub_id")int subId, @Param("class_num")int classNum);
 
+	@Select("SELECT * FROM score WHERE sub_id = #{sub_id} AND class_num = #{class_num} ORDER BY score DESC")
+	@Results(id = "getAllSingleRank", value = {
+			@Result(property = "studentNum", column = "st_id"),
+			@Result(property = "subId", column = "sub_id"),
+			@Result(property = "classRank", column = "rank"),
+			@Result(property = "score", column = "score")
+	})
+	List<Student> getAllSingleRank(@Param("class_num")int classNum, @Param("sub_id")int subId);
 }
