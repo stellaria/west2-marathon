@@ -16,7 +16,7 @@ public interface LoginMapper {
 			@Result(property = "studentNum", column = "st_id"),
 			@Result(property = "classNum", column = "class_num"),
 			@Result(property = "flag", column = "check"),
-			@Result(property = "isLeader", column = "leader")
+			@Result(property = "leader", column = "leader")
 	})
 	User findById(@Param("id") String id);
 

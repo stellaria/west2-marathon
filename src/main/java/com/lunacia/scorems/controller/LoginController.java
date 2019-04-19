@@ -18,7 +18,7 @@ public class LoginController {
 	@SuppressWarnings("SpringJavaAutowiringInspection")
 	private LoginMapper loginMapper;
 
-	@PostMapping("/login")
+	@PostMapping("/api/login")
 	//@RequestParam("id") String username, @RequestParam("passwd") String passwd
 	public HashMap<String, Object> login(@RequestBody Map<String, Object> resMap) {
 		HashMap<String, Object> map = new HashMap<>();
@@ -38,10 +38,11 @@ public class LoginController {
 		if (loginMapper.login(username).equals(passwd)) {
 			User user = loginMapper.findById(username);
 			map.put("code", 200);
-			map.put("massage", "登录成功");
+			map.put("message", "登录成功");
 			map.put("isFirst", user.getFlag());
 			map.put("isLeader", user.getLeader());
 			map.put("count", loginMapper.count(user.getClassNum()));
+			map.put("classNum", user.getClassNum());
 		} else {
 			map.put("code", 403);
 			map.put("message", "登录失败");
