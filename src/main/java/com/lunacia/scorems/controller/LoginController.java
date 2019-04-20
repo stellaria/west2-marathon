@@ -35,8 +35,13 @@ public class LoginController {
 	}
 
 	private void login(String username, String passwd, HashMap<String, Object> map) {
+		User user = loginMapper.findById(username);
+		if (user == null) {
+			map.put("code", 403);
+			map.put("message", "登录失败");
+			return;
+		}
 		if (loginMapper.login(username).equals(passwd)) {
-			User user = loginMapper.findById(username);
 			map.put("code", 200);
 			map.put("message", "登录成功");
 			map.put("isFirst", user.getFlag());
