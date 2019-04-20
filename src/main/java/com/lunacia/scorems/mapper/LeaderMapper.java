@@ -5,6 +5,7 @@ import com.lunacia.scorems.domain.Student;
 import org.apache.ibatis.annotations.*;
 import org.hibernate.validator.constraints.pl.REGON;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +67,12 @@ public interface LeaderMapper {
 	})
 	List<Student> getAllSingleRank(@Param("class_num")int classNum, @Param("sub_id")int subId);
 
-	@Select("SELECT total FROM score_sum WHERE st_id = #{st_id} AND info_id = 1")
-	Integer getTotal(@Param("st_id") String stId);
+	@Select("SELECT total FROM score_sum WHERE st_id = #{st_id} AND info_id = #{info_id}")
+	Integer getTotal(@Param("st_id") String stId , @Param("info_id") int infoId);
+
+	@Select("SELECT name FROM student WHERE st_id = #{st_id}")
+	String getStudentName(@Param("st_id") String stId);
+
+	@Select("SELECT sub_name FROM score_view WHERE info_id = #{info_id} GROUP BY sub_name")
+	List<HashMap<String , Object>> getSubIdByInfoId(@Param("info_id") int infoId);
 }

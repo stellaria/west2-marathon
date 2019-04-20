@@ -13,6 +13,16 @@ public class Student {
 	private int classNum;
 	private int classRank;
 	private int infoId;
+	private String studentName;
+
+	public String getStudentName() {
+		return studentName;
+	}
+
+	public void setStudentName(String studentName) {
+		this.studentName = studentName;
+	}
+
 	private HashMap<String , Object> allScore;
 
 	public HashMap<String, Object> getAllScore() {
@@ -22,7 +32,7 @@ public class Student {
 	public void setAllScore(HashMap<String, Object> allScore) {
 		this.allScore = allScore;
 	}
-	//=================================
+
 
 	public int getInfoId() {
 		return infoId;

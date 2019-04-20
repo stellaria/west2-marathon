@@ -124,14 +124,14 @@ public class LeaderController {
 			HashMap<String , Object> allScore = new HashMap<>();
 			allScore.put("AllScore" , studentMapper.getScore(list.get(i).getStudentNum() , infoId));
 			list.get(i).setAllScore(allScore);
+			list.get(i).setStudentName(leaderMapper.getStudentName(list.get(i).getStudentNum()));
 		}
 
 		HashMap<String , Object> hashMap = new HashMap<>();
-		HashMap<String , Object> rank = new HashMap<>();
-		rank.put("sum_rank" , list);
+		hashMap.put("data" , list);
+		hashMap.put("sub_name" , leaderMapper.getSubIdByInfoId(infoId));
 		hashMap.put("code", 200);
 		hashMap.put("message", "");
-		hashMap.put("data", rank);
 		return hashMap;
 	}
 
@@ -161,12 +161,15 @@ public class LeaderController {
 			HashMap<String , Object> allScore = new HashMap<>();
 			allScore.put("AllScore" , studentMapper.getScore(list.get(i).getStudentNum() ,list.get(i).getInfoId()));
 			list.get(i).setAllScore(allScore);
-			list.get(i).setScore(leaderMapper.getTotal(list.get(i).getStudentNum()));
+			list.get(i).setScore(leaderMapper.getTotal(list.get(i).getStudentNum() ,list.get(i).getInfoId()));
+			list.get(i).setStudentName(leaderMapper.getStudentName(list.get(i).getStudentNum()));
 		}
 		map.put("code", 200);
 		map.put("message", "");
 		map.put("data", list);
+		map.put("sub_name" , leaderMapper.getSubIdByInfoId(list.get(1).getInfoId()));
 		map.put("class_num", classNum);
+
 		return map;
 	}
 
