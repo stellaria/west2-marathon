@@ -61,7 +61,11 @@ public interface LeaderMapper {
 			@Result(property = "studentNum", column = "st_id"),
 			@Result(property = "subId", column = "sub_id"),
 			@Result(property = "classRank", column = "rank"),
-			@Result(property = "score", column = "score")
+			@Result(property = "score", column = "score"),
+			@Result(property = "infoId" , column = "info_id")
 	})
 	List<Student> getAllSingleRank(@Param("class_num")int classNum, @Param("sub_id")int subId);
+
+	@Select("SELECT total FROM score_sum WHERE st_id = #{st_id} AND info_id = 1")
+	Integer getTotal(@Param("st_id") String stId);
 }

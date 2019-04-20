@@ -1,5 +1,6 @@
 package com.lunacia.scorems.domain;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,16 @@ public class Student {
 	private int classNum;
 	private int classRank;
 	private int infoId;
+	private HashMap<String , Object> allScore;
+
+	public HashMap<String, Object> getAllScore() {
+		return allScore;
+	}
+
+	public void setAllScore(HashMap<String, Object> allScore) {
+		this.allScore = allScore;
+	}
+	//=================================
 
 	public int getInfoId() {
 		return infoId;
@@ -71,5 +82,9 @@ public class Student {
 	public void setExamDate (String examDate) {
 		this.examDate = examDate;
 	}
+
+//	public String toString(){
+//		return "student_id" + this.getStudentNum();
+//	}
 
 }

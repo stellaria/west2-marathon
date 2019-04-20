@@ -4,6 +4,7 @@ package com.lunacia.scorems.controller;
 import com.lunacia.scorems.domain.Student;
 import com.lunacia.scorems.mapper.LeaderMapper;
 import com.lunacia.scorems.mapper.StudentMapper;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -119,8 +120,14 @@ public class LeaderController {
 				leaderMapper.setSumRank(rank , list.get(i).getStudentNum() , list.get(i).getInfoId());
 			}
 		}
+		for (int i = 0 ; i< list.size() ; i++){
+			HashMap<String , Object> allScore = new HashMap<>();
+			allScore.put("AllScore" , studentMapper.getScore(list.get(i).getStudentNum() , infoId));
+			list.get(i).setAllScore(allScore);
+		}
+
 		HashMap<String , Object> hashMap = new HashMap<>();
-		HashMap<String , List<Student>> rank = new HashMap<>();
+		HashMap<String , Object> rank = new HashMap<>();
 		rank.put("sum_rank" , list);
 		hashMap.put("code", 200);
 		hashMap.put("message", "");
@@ -130,6 +137,7 @@ public class LeaderController {
 
 	/**
 	 * 获取本班某科目所有人的排名
+	 * 以这个科目进行排名
 	 * @param classNum
 	 * @param subId
 	 * @return
@@ -148,6 +156,12 @@ public class LeaderController {
 				list.get(i).setClassRank(rank);
 				studentMapper.setRank(rank, list.get(i).getStudentNum(), subId);
 			}
+		}
+		for(int i = 0 ; i < list.size() ; i++){
+			HashMap<String , Object> allScore = new HashMap<>();
+			allScore.put("AllScore" , studentMapper.getScore(list.get(i).getStudentNum() ,list.get(i).getInfoId()));
+			list.get(i).setAllScore(allScore);
+			list.get(i).setScore(leaderMapper.getTotal(list.get(i).getStudentNum()));
 		}
 		map.put("code", 200);
 		map.put("message", "");
